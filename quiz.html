@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engineering Branch Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+
+  <!-- ══════════════ SPLASH SCREEN ══════════════ -->
+  <div class="screen active" id="splash-screen">
+    <div class="splash-wrap">
+      <span class="splash-icon">🎓</span>
+      <div class="splash-pill">⚙️ Engineering Quiz</div>
+      <h1 class="splash-title">Test Your<br><span>Engineering</span> IQ!</h1>
+      <p class="splash-desc">Branch-specific questions tailored just for you. MCQ & True/False covering your core engineering subjects. 20 seconds per question!</p>
+      <div class="stats-row">
+        <div class="stat-box"><span class="n">15</span><span class="l">Questions</span></div>
+        <div class="stat-box"><span class="n">20s</span><span class="l">Per Q</span></div>
+        <div class="stat-box"><span class="n">🏢</span><span class="l">Branch-wise</span></div>
+        <div class="stat-box"><span class="n">💡</span><span class="l">Hints</span></div>
+      </div>
+      <button class="start-btn" onclick="goToReg()">Get Started 🚀</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ REGISTRATION SCREEN ══════════════ -->
+  <div class="screen" id="reg-screen">
+    <div class="reg-card">
+      <span style="font-size:40px;display:block;text-align:center;margin-bottom:10px;">📋</span>
+      <h2 class="reg-title">Student Details</h2>
+      <p class="reg-sub">Fill in your info before the quiz begins</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>👤 Full Name</label>
+          <input type="text" id="inp-name" placeholder="Your full name" maxlength="50">
+        </div>
+        <div class="form-group">
+          <label>🪪 Roll Number</label>
+          <input type="text" id="inp-roll" placeholder="e.g. 2301234" maxlength="15">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>🏢 Select Your Branch</label>
+        <div class="branch-grid" id="branch-grid">
+          <div class="branch-opt" data-branch="cs" onclick="selectBranch(this)">
+            <span class="b-icon">💻</span>
+            <span class="b-name">Computer Science (CS)</span>
+          </div>
+          <div class="branch-opt" data-branch="ec" onclick="selectBranch(this)">
+            <span class="b-icon">📡</span>
+            <span class="b-name">Electronics & Comm (EC)</span>
+          </div>
+          <div class="branch-opt" data-branch="me" onclick="selectBranch(this)">
+            <span class="b-icon">⚙️</span>
+            <span class="b-name">Mechanical Engg (ME)</span>
+          </div>
+          <div class="branch-opt" data-branch="ce" onclick="selectBranch(this)">
+            <span class="b-icon">🏗️</span>
+            <span class="b-name">Civil Engineering (CE)</span>
+          </div>
+          <div class="branch-opt" data-branch="ee" onclick="selectBranch(this)">
+            <span class="b-icon">⚡</span>
+            <span class="b-name">Electrical Engg (EE)</span>
+          </div>
+          <div class="branch-opt" data-branch="ch" onclick="selectBranch(this)">
+            <span class="b-icon">🧪</span>
+            <span class="b-name">Chemical Engg (CH)</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="err-msg" id="err-msg">⚠️ Please fill all fields and select a branch.</p>
+      <button class="reg-btn" onclick="submitReg()">Start Quiz 🎯</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ QUIZ SCREEN ══════════════ -->
+  <div class="screen" id="quiz-screen">
+    <div class="student-bar">
+      <span>👤 <span class="s-name" id="bar-name">—</span></span>
+      <span class="s-roll">🪪 <span id="bar-roll">—</span></span>
+      <span>🏢 <span id="bar-branch">—</span></span>
+    </div>
+
+    <div class="quiz-topbar">
+      <span class="q-label" id="q-label">Question 1 of 15</span>
+      <span class="live-score" id="live-score">⭐ Score: 0</span>
+    </div>
+
+    <div class="prog-wrap">
+      <div class="prog-track">
+        <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="prog-txt" id="prog-txt">0 of 15 done</div>
+
+    <div class="timer-row">
+      <span class="t-icon">⏱</span>
+      <div class="t-track">
+        <div class="t-fill" id="t-fill" style="width:100%"></div>
+      </div>
+      <span class="t-num" id="t-num">20</span>
+    </div>
+
+    <div class="top-actions">
+      <button class="hint-btn" id="hint-btn" onclick="showHint()">💡 Hint</button>
+      <span class="tf-badge" id="type-badge">MCQ</span>
+    </div>
+
+    <div class="hint-box" id="hint-box"></div>
+    <div class="feedback-bar" id="feedback-bar"></div>
+
+    <div class="q-card" id="q-card">
+      <span class="cat-tag" id="cat-tag">Subject</span>
+      <div class="q-num-row">
+        <p class="q-text" id="q-text">Question text</p>
+        <span class="q-type-icon" id="q-type-icon">❓</span>
+      </div>
+      <div id="answers-area"></div>
+    </div>
+
+    <button class="next-btn" id="next-btn" onclick="nextQ()">Next Question →</button>
+  </div>
+
+  <!-- ══════════════ RESULT SCREEN ══════════════ -->
+  <div class="screen" id="result-screen">
+    <div class="res-card">
+      <div class="res-student-info">
+        <span>👤 <strong id="res-name">—</strong></span>
+        <span>🪪 Roll: <strong id="res-roll">—</strong></span>
+        <span>🏢 <strong id="res-branch">—</strong></span>
+      </div>
+      <span class="res-emoji" id="res-emoji">🏆</span>
+      <h2 class="res-title" id="res-title">Well Done!</h2>
+      <p class="res-sub" id="res-sub">Great effort!</p>
+      <div class="ring-wrap">
+        <svg width="144" height="144" viewBox="0 0 144 144">
+          <circle class="ring-bg" cx="72" cy="72" r="62"/>
+          <circle class="ring-arc" id="ring-arc" cx="72" cy="72" r="62"
+            stroke-dasharray="389.56" stroke-dashoffset="389.56"/>
+        </svg>
+        <div class="ring-center">
+          <span class="ring-n" id="ring-n">0</span>
+          <span class="ring-d" id="ring-d">out of 15</span>
+        </div>
+      </div>
+      <div class="res-pills">
+        <div class="res-pill pill-g" id="pill-c">✓ 0 Correct</div>
+        <div class="res-pill pill-r" id="pill-w">✗ 0 Wrong</div>
+        <div class="res-pill pill-b" id="pill-t">⏱ 0s avg</div>
+      </div>
+      <div class="grade-box" id="grade-box"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-retry" onclick="retryQuiz()">🔁 Play Again</button>
+      <button class="btn-review" onclick="openReview()">📋 Review</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ REVIEW MODAL ══════════════ -->
+  <div id="modal" onclick="modalClickOut(event)">
+    <div class="modal-inner">
+      <div class="modal-head">
+        <span class="modal-title">📋 Answer Review</span>
+        <button class="close-x" onclick="closeModal()">✕</button>
+      </div>
+      <div id="rev-list"></div>
+    </div>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
